@@ -4,6 +4,7 @@ const moment = require('moment');
 const Spotify = require('node-spotify-api');
 const dotenv = require('dotenv');
 const axios = require('axios');
+let fs = require('fs');
 
 
 const spotify = new Spotify(keys.spotify);
@@ -23,7 +24,7 @@ spotifySearch = (searchTerm) => {
                     console.log('Link: ' + x.external_urls.spotify);
                     console.log('Album: ' + x.album.name);
                     // console.log(response.tracks.items[0].artists.name);
-                    console.log('000000000')
+                    console.log('-------------------------------------------------')
                 }));
             })
             .catch(function (err) {
@@ -152,7 +153,20 @@ bandsSearch = (searchterm) => {
 }
 
 searchFromRandom = () => {
-
+    fs.readFile('random.txt', 'utf8', function (err, data) {
+        if (err) {
+            console.log(err);
+        }
+        data = data.split(',');
+        if (data[0] === 'concert-this') {
+            bandsSearch(data[1]);
+        } else if (data[0] === 'spotify-this-song') {
+            spotifySearch(data[1]);
+        } else if (data[0] === 'movie-this') {
+            omdbSearch(data[1]);
+        }
+        console.log(data[0])
+    });
 }
 
 switch (searchType) {
